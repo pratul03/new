@@ -46,6 +46,7 @@ async function fetchAllUsers() {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
+                phone: user.phone,
                 status: user.status,
                 role: user.role
             }));
@@ -66,9 +67,9 @@ async function fetchAllUsers() {
 }
 
 function exportToCSV(users) {
-    const csvHeader = 'User ID,First Name,Last Name,Email,Status,Role\n';
+    const csvHeader = 'User ID,First Name,Last Name,Email,Phone,Status,Role\n';
     const csvRows = users.map(user => 
-        `${user.userId},"${user.firstName}","${user.lastName}","${user.email}",${user.status},${user.role}`
+        `${user.userId},"${user.firstName}","${user.lastName}","${user.email}","${user.phone}",${user.status},${user.role}`
     ).join('\n');
     
     const csvContent = csvHeader + csvRows;
