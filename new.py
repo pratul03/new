@@ -1,7 +1,7 @@
 import pandas as pd
 
 # File path
-file_path = "/mnt/data/368_data.csv"
+file_path = "./368_data.csv"
 
 # Define the actual column names in the correct order
 columns = [
@@ -26,14 +26,14 @@ for _, row in filtered_df.iterrows():
         if pd.isna(val):
             values.append("NULL")
         elif isinstance(val, str):
-            values.append(f"'{val.replace("'", "''")}'")
+            values.append("'" + val.replace("'", "''") + "'")
         else:
             values.append(str(val))
     sql = f"INSERT INTO property_management.assets ({', '.join(columns)}) VALUES ({', '.join(values)});"
     sql_statements.append(sql)
 
 # Save to file
-output_path = "/mnt/data/insert_statements.sql"
+output_path = "./data/insert_statements.sql"
 with open(output_path, "w", encoding="utf-8") as f:
     f.write("\n".join(sql_statements))
 
