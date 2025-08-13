@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 
 # File path
 file_path = "./368_data.csv"
@@ -18,7 +19,7 @@ df = pd.read_csv(file_path, names=columns, header=None)
 # Filter rows where site_id = 368
 filtered_df = df[df["site_id"] == 368]
 
-# Generate SQL insert statements
+# Generate SQL insert statements with ON CONFLICT DO NOTHING
 sql_statements = []
 for _, row in filtered_df.iterrows():
     values = []
@@ -29,12 +30,22 @@ for _, row in filtered_df.iterrows():
             values.append("'" + val.replace("'", "''") + "'")
         else:
             values.append(str(val))
-    sql = f"INSERT INTO property_management.assets ({', '.join(columns)}) VALUES ({', '.join(values)});"
+
+    sql = (
+        "INSERT INTO property_management.assets (\n    "
+        + ", ".join(columns)
+        + "\n) VALUES (\n    "
+        + ", ".join(values)
+        + "\n) ON CONFLICT (asset_id) DO NOTHING;"
+    )
     sql_statements.append(sql)
+
+# Ensure output directory exists
+os.makedirs("./data", exist_ok=True)
 
 # Save to file
 output_path = "./data/insert_statements.sql"
 with open(output_path, "w", encoding="utf-8") as f:
-    f.write("\n".join(sql_statements))
+    f.write("\n\n".join(sql_statements))
 
-output_path
+print(f"SQL file generated at: {output_path}")
